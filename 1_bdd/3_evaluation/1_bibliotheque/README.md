@@ -22,6 +22,7 @@
 | Auteur                | auteur_id          | int          |
 | Editeur               | editeur_id         | int          |
 | Thème                 | theme_id           | int          |
+| Date d'édition        | livre_date_edition | date         |
 | Date de mise au rebut | livre_date_rebut   | date         |
 | Nombre d'emprunts     | livre_emprunts     | int          |
 | Indisponibilité       | livre_indisponible | boolean      |
