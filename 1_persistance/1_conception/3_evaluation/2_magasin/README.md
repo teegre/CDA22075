@@ -29,7 +29,7 @@
 
 * Afin de facilement retrouver un client, une commande ou un article, un numéro unique leur est attribué. `N°Client`, `N°Commande`  et `N°Article` sont donc choisi en tant que clés primaires pour leurs tables respectives.
 
-* La table `SeCompose` contient une clé primaire composée des clés étrangères `N°Commande` et `N°Article` . Ainsi, un article ne figure qu'une seule fois par commande.
+* La table `SeCompose` contient une clé primaire composée des clés étrangères `N°Commande` et `N°Article` . Ainsi, un article ne peut figurer qu'une seule fois par commande.
 
 ## Script de création de la base de données (MariaDB)
 
