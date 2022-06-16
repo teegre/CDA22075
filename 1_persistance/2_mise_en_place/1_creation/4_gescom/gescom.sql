@@ -53,6 +53,8 @@ CREATE TABLE products (
   FOREIGN KEY (pro_sup_id) REFERENCES suppliers(sup_id)
 );
 
+CREATE UNIQUE INDEX product_reference ON products(pro_ref);
+
 CREATE TABLE orders (
   ord_id INT NOT NULL,
   ord_order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
