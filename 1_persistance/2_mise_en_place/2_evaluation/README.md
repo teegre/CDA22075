@@ -119,20 +119,20 @@ CREATE TABLE vente (
 
 ```sql
 CREATE USER 'matt'@'localhost' IDENTIFIED BY 'extremelycomplicatedpassword';
-GRANT ALL PRIVILEGES ON papyrus.* TO 'matt'
+GRANT ALL PRIVILEGES ON papyrus.* TO 'matt'@'localhost'
 ```
 
 #### Bianco ne peut que consulter les données :
 
 ```sql
 CREATE USER 'bianco'@'localhost';
-GRANT SELECT ON papyrus.*;
+GRANT SELECT ON papyrus.* TO 'bianco'@'localhost';
 ```
 #### Bernard gère les produits :
 
 ```sql
 CREATE USER 'bernard'@'localhost';
-GRANT SELECT INSERT UPDATE DELETE on papyrus.produit;
+GRANT SELECT INSERT UPDATE DELETE on papyrus.produit TO 'bernard'@'localhost';
 ```
 
 ### Importation des données de la table produit depuis le fichier *produit.csv*
