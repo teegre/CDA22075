@@ -52,7 +52,7 @@ create table eval (
   foreign key (id_matiere) references matiere(id)
 );
 
--- ajout de 5 notes par matière pour chaque élève.
+-- ajout de 10 notes par matière pour chaque élève.
 delimiter //
 
 create procedure ajout_notes()
@@ -104,8 +104,6 @@ begin
 end O_o
 
 delimiter ;
-
-delimiter o_O
 
 -- affiche les élèves dont la moyenne générale pondérée est supérieure à la moyenne générale générale.
 create view moyenne_eleve_sup_moyenne_gen as
