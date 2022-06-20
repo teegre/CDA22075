@@ -71,6 +71,7 @@ CREATE TABLE fournis (
   confou VARCHAR(15) NOT NULL,
   satisf TINYINT(2) UNSIGNED,
   PRIMARY KEY (numfou),
+  CHECK (posfou RLIKE '^[0-9]{5}$'),
   CHECK (satisf >-1 AND satisf < 11 )
 );
 
