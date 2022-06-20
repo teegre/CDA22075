@@ -1,3 +1,5 @@
+USE hotels;
+
 INSERT INTO station (station_id, station_nom, station_altitude) VALUES (1, 'La Montagne', 2500);
 INSERT INTO station (station_id, station_nom, station_altitude) VALUES (2, 'Le Sud', 200);
 INSERT INTO station (station_id, station_nom, station_altitude) VALUES (3, 'La Plage', 10);

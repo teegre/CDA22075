@@ -1,3 +1,5 @@
+USE hotels;
+
 CREATE VIEW v_hotels_stations AS
 SELECT hotel_nom, station_nom FROM hotel
 JOIN station ON hotel.hotel_station_id = station.station_id
