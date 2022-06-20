@@ -59,27 +59,32 @@ GROUP BY matiere.id;
 ### Moyenne générale de chaque étudiant :
 
 ```sql
-SELECT nom, prenom, avg(note) as moyenne FROM EVALUER
+SELECT nom, prenom, sum(note*coeff)/sum(coeff) as moyenne FROM EVALUER
+JOIN MATIERE ON EVALUER.id_matiere = MATIERE.id
 JOIN ETUDIANT ON EVALUER.id_etudiant = ETUDIANT.id
-GROUP BY etudiant.id;
+GROUP BY etudiant.id
+ORDER BY nom;
 ```
 
 ### Moyenne générale de la promotion :
 
 ```sql
-SELECT avg(note) as moyenne_generale FROM EVALUER;
+SELECT sum(note*coeff)/sum(coeff) as moyenne_generale FROM EVALUER
+JOIN MATIERE ON EVALUER.id_matiere = MATIERE.id;
 ```
 
 ### Etudiants ayant une moyenne supérieure ou égale à la moyenne générale de la promotion :
 
 ```sql
-SELECT nom, prenom, avg(note) AS moyenne FROM EVALUER
-JOIN ETUDIANT on EVALUER.id_etudiant = ETUDIANT.id
+SELECT nom, prenom, sum(note*coeff)/sum(coeff) AS moyenne_generale FROM EVALUER
+JOIN MATIERE ON EVALUER.id_matiere = MATIERE.id
+JOIN ETUDIANT ON EVALUER.id_etudiant = ETUDIANT.id
 GROUP BY ETUDIANT.id
-HAVING moyenne >= (
-  SELECT avg(note) FROM EVALUER
+HAVING moyenne_generale >= (
+  SELECT sum(note*coeff)/sum(coeff) FROM EVALUER
+  JOIN MATIERE ON EVALUER.id_matiere = MATIERE.id
 )
-ORDER BY moyenne DESC;
+ORDER BY moyenne_generale DESC;
 ```
 
 ## Série 3.
