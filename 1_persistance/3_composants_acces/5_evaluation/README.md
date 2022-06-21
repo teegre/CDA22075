@@ -148,7 +148,7 @@ DELIMITER ;
 *Pour chaque produit d'une commande vérifier que le client réside dans le même pays que le fournisseur du produit.*
 
 En d'autres termes, lors de l'ajout d'un produit dans la table `order details`, vérifier que le pays de livraison (table `orders`),  
-l'adresse de livraison pouvant différer de celle du client, est les même que celui du fournisseur du produit en question (table `suppliers`).  
+l'adresse de livraison pouvant différer de celle du client, est identique à celui du fournisseur du produit en question (table `suppliers`).  
 Si ce n'est pas le cas, l'ajout n'est pas effectué et un message d'erreur est affiché.
 
 Pour cela, l'utilisation d'une fonction stockée et d'un déclencheur semble appropriée.
