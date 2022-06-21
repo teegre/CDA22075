@@ -156,7 +156,7 @@ GRANT SELECT INSERT UPDATE DELETE on papyrus.produit TO 'bernard'@'localhost';
 ```sql
 LOAD DATA LOCAL INFILE 'produit.csv' INTO TABLE produit
 FIELDS TERMINATED BY ';'
-LINES TERMINATED BY '\r\n'
+LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (codart,libart,stkale,stkphy,qteann,unimes);
 
