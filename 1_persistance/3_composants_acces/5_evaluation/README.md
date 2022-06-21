@@ -153,8 +153,8 @@ Si ce n'est pas le cas, l'ajout n'est pas effectué et un message d'erreur est a
 
 Pour cela, l'utilisation d'une fonction stockée et d'un déclencheur semble appropriée.
 
-La fonction retournerait un booléen : vrai si les pays sont identiques, sinon faux.  
-Le déclencheur utiliserait cette fonction pour empêcher ou non l'ajout du produit concerné dans la table `order details`.
+La fonction retourne un booléen : vrai si les pays sont identiques, sinon faux.  
+Le déclencheur utilise cette fonction pour empêcher ou non l'ajout du produit concerné dans la table `order details`.
 
 ### Fonction stockée `meme_pays()` :
 
