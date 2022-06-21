@@ -49,7 +49,7 @@ HAVING Nbre_commandes > 10;
 
 ### 5. Liste des clients dont le montant cumulé de toutes les commandes passées est supérieur à 30 000 € :
 
-*Client, CA, Pays*
+*Client, CA*
 
 ```sql
 SELECT CompanyName AS Client, SUM((UnitPrice*Quantity)-Discount) AS ca
@@ -147,11 +147,12 @@ DELIMITER ;
 
 *Pour chaque produit d'une commande vérifier que le client réside dans le même pays que le fournisseur du produit.*
 
-En d'autres mots, lors de l'ajout d'un produit dans la table `order details` (`ON INSERT`),  
-vérifier que le fournisseur de ce produit (table `suppliers`) réside dans le même pays que le client (table `customers`).  
-Si ce n'est pas le cas l'ajout est refusé et un message est affiché.
+En d'autres termes, lors de l'ajout d'un produit dans la table `order details`, vérifier que le pays de livraison (table `orders`),  
+l'adresse de livraison pouvant différer de celle du client, est les même que celui du fournisseur du produit en question (table `suppliers`).  
+Si ce n'est pas le cas, l'ajout n'est pas effectué et un message d'erreur est affiché.
 
-Pour cela, l'utilisation d'une fonction stockée et d'un déclencheur semble appropriée.  
+Pour cela, l'utilisation d'une fonction stockée et d'un déclencheur semble appropriée.
+
 La fonction retournerait un booléen : vrai si les pays sont identiques, sinon faux.  
 Le déclencheur utiliserait cette fonction pour empêcher ou non l'ajout du produit concerné dans la table `order details`.
 
