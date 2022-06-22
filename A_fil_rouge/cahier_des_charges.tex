@@ -1,0 +1,103 @@
+\documentclass{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{parskip}
+\usepackage{geometry}
+\geometry{a4paper, total={170mm,257mm}, left=20mm, top=20mm,}
+
+\title{\textbf{Projet fil rouge}\\Cahier des charges}
+\author{\textbf{AFPA}}
+\date{7 juin 2022}
+
+\begin{document}
+  \pagenumbering{gobble}
+  \maketitle
+  \newpage
+  \pagenumbering{arabic}
+
+\section{Objectifs}
+\paragraph{}
+L’entreprise \textbf{Village Green} distribue du matériel musical. Elle a une activité de grossiste, c'est-à-dire de revente aux magasins spécialisés. Elle peut sous certaines conditions procéder à la vente aux particuliers et elle souhaiterait développer cette activité.
+\par
+\paragraph{}
+L’entreprise \textbf{Village Green} souhaite faire évoluer son système de gestion des commandes et de facturation. Actuellement, l’organisation utilise un système qui ne donne pas entière satisfaction. L’informatisation de la totalité du processus depuis la mise à jour du catalogue, de la commande jusqu’au paiement, a pour objectif de fluidifier le workflow de l’entreprise.
+\par
+\paragraph{}
+La société souhaite avoir un site d'e-commerce permettant aux clients de visualiser l'ensemble du catalogue et de passer des commandes en ligne.
+\par
+\section{L’existant}
+\paragraph{}
+Les produits référencés sont achetés directement auprès des fournisseurs (constructeurs ou importateurs). Dans le catalogue de l'entreprise tous les produits sont organisés en Rubrique/SousRubrique. Chaque produit doit être décrit par un libellé court et un libellé long (description), une référence fournisseur, un prix d'achat, une photo.
+\par
+\paragraph{}
+L'équipe qui gère les relations avec les fournisseurs tient à jour le catalogue. Elle met à jour le stock, valide ou pas la publication de nouveaux produits et désactive d'anciens produits. Elle gère aussi l'arborescence Rubrique/SousRubrique.
+\par
+\paragraph{}
+Tous les prix sont notés hors taxes. Le prix de vente est calculé à partir du prix d'achat auquel on applique un coefficient en fonction de la catégorie du client (Particulier ou Professionnel). Les coefficients sont attribués aux clients au moment de leur création et peuvent être ajustés par le service commercial. Les clients particuliers ont tous le même coefficient.
+\par
+\paragraph{}
+A chaque client est attribué un commercial. Un commercial spécifique s'occupe des clients particuliers
+\par
+\paragraph{}
+Quand un client professionnel passe une commande, il peut être appliqué une réduction supplémentaire sur le total, cette réduction est négociée par le service commercial.
+\par
+\paragraph{}
+Au moment de la commande, il faut prendre en compte l'adresse de livraison et l'adresse de facturation. Un bon de livraison et une facture doivent pouvoir être éditées. Pour les clients particuliers, un paiement à la commande est exigé. Pour les clients professionnels, le paiement se fait en différé (par virement ou par chèque). Dans les deux cas de figure, on notera l'information concernant le règlement.
+\par
+\paragraph{}
+Chaque client se voit attribuer une référence qui servira à l'identifier lors des échanges avec les différents services de l'entreprise (après-vente, commercial, comptabilité)
+\par
+\paragraph{}
+Une commande expédiée même partiellement fait l’objet d’une facturation de l’ensemble de la commande.
+\par
+\paragraph{}
+Les commandes et les documents associés sont conservés pendant trois ans.
+\par
+\section{Attendus}
+\paragraph{}
+Pour développer son système de vente, l'entreprise souhaiterait mettre en place un site web (e-commerce) accessible aux particuliers et aux professionnels. Cette solution doit offrir les services suivants :
+\par
+\begin{itemize}
+  \item Consultation du catalogue
+  \item Ajout/Suppression de produit dans le panier
+  \item Inscription d'un nouvel utilisateur sur le site (pour les particuliers)
+  \item Connexion/Deconnexion d'un utilisateur pour accéder à son profil
+  \item Validation du panier pour créer une nouvelle commande
+  \item Visualisation des anciennes commandes
+\end{itemize}
+\paragraph{}
+Le site doit bien évidement être lisible sur les principaux navigateurs et il doit s'adapter aux navigateurs mobiles.
+\par
+\paragraph{}
+Pour son usage interne, l'entreprise souhaite s'équiper d'un logiciel de gestion commerciale. Ce logiciel sera déployé sur les postes informatiques de l'entreprise.
+\\[1\baselineskip]
+Un module de gestion des produits réservé au service de gestion des produits doit permettre :
+\par
+\begin{itemize}
+  \item D’ajouter des produits
+  \item D’en supprimer
+  \item D’en modifier les caractéristiques (libellé, caractéristique, tarif)
+  \item De modifier l'arborescence des catégories
+\end{itemize}
+\paragraph{}
+Un tableau de bord de gestion permettra d'afficher des indicateurs de performance
+\begin{itemize}
+  \item Chiffre d'affaires mois par mois pour une année sélectionnée
+  \item Chiffre d'affaires généré pour un fournisseur
+  \item TOP 10 des produits les plus commandés pour une année sélectionnée (référence et nom du produit, quantité commandée, fournisseur)
+  \item TOP 10 des produits les plus rémunérateurs pour une année sélectionnée (référence et nom du produit, marge, fournisseur)
+  \item Top 10 des clients en nombre de commandes ou chiffre d'affaires
+  \item Répartition du chiffre d'affaires par type de client
+  \item Nombre de commandes en cours de livraison.
+\end{itemize}
+\par
+\paragraph{}
+L'entreprise souhaite proposer à ses clients particuliers une application mobile. Cette application doit permettre de :
+\begin{itemize}
+  \item Consulter le catalogue (parcourir les rubriques et les produits)
+  \item Se connecter pour consulter l'historique des commandes
+  \item Consulter son profil
+\end{itemize}
+\par
+\end{document}
