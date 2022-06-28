@@ -31,6 +31,7 @@
 | Adresse de facturation    | commande_adresse_facturation  | varchar     |           |
 | Adresse de livraison      | commande_adresse_livraison    | varchar     |           |
 | Pays de livraison         | commande_pays_livraison       | varchar     |           |
+| Remise supplémentaire     | commande_remise               | double      |           |
 | Quantité commandée        | detail_commande_quantite      | int         |           |
 | Prix unitaire             | detail_commande_prix_unitaire | double      |           |
 | Remise                    | detail_commande_remise        | double      |           |
@@ -52,3 +53,9 @@
 | Prénom employé            | employe_prenom                | varchar     |           |
 | ID service                | service_id                    | int         | PK        |
 | Nom service               | service_nom                   | varchar     |           |
+| ID bordereau livraison    | bl_id                         | int         | PK        |
+| Date bordereau            | bl_date                       | date        |           |
+| ID commande               | commande_id                   | int         | FK        |
+| ID facture                | facture_id                    | int         | PK        |
+| Date facture              | facture_date                  | date        |           |
+| ID commande               | commande_id                   | int         | FK        |
