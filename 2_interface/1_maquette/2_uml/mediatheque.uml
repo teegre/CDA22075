@@ -8,10 +8,10 @@ package Médiathèque {
   usecase "Consulte liste de documents" as list
   usecase "Consulte document sur place" as here
   usecase "Emprunte un document" as borr
+  usecase "Enregistre/met à jour usagers" as recuser
   usecase "Achète nouveaux documents" as buy
-  usecase "Enregistre nouveaux usagers" as recuser
   usecase "Enregistre nouveaux documents" as recdoc
-  usecase "Référence l'emprunt" as refer
+  usecase "Référence emprunts" as refer
 }
 U --> list
 U --> here
