@@ -1,0 +1,24 @@
+@startuml
+skinparam actorStyle Hollow
+left to right direction
+actor Usager as U
+actor Employé as E
+actor Bénévole as B
+package Médiathèque {
+  usecase "Consulte liste de documents" as list
+  usecase "Consulte document sur place" as here
+  usecase "Emprunte un document" as borr
+  usecase "Achète nouveaux documents" as buy
+  usecase "Enregistre nouveaux usagers" as recuser
+  usecase "Enregistre nouveaux documents" as recdoc
+  usecase "Référence l'emprunt" as refer
+}
+U --> list
+U --> here
+U --> borr
+E --> recuser
+E --> buy
+E --> recdoc
+E --> refer
+B --> refer
+@enduml
