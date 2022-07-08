@@ -1,23 +1,18 @@
 @startuml
+!theme amiga
 skinparam actorStyle Hollow
 left to right direction
 actor Usager as U
 actor Employé as E
 actor Bénévole as B
-package Médiathèque {
+rectangle Médiathèque {
   usecase "Consulte liste de documents" as list
-  usecase "Consulte document sur place" as here
-  usecase "Emprunte un document" as borr
   usecase "Enregistre/met à jour usagers" as recuser
-  usecase "Achète nouveaux documents" as buy
   usecase "Enregistre nouveaux documents" as recdoc
   usecase "Référence emprunts" as refer
 }
 U --> list
-U --> here
-U --> borr
 E --> recuser
-E --> buy
 E --> recdoc
 E --> refer
 B --> refer
