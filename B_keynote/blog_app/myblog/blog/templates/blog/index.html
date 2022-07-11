@@ -1,0 +1,11 @@
+{% extends 'blog/base.html' %}
+{% block title %}MyBlog!{% endblock %}
+{% block body %}
+  <h1>MyBlog!</h1>
+  <ul>
+  {% for article in articles %}
+    <li>{{ article.date|date:'d/m/Y' }} {{ article.title }}</li>
+  {% empty %}
+    <li>C'est vide...</li>
+  {% endfor %}
+{% endblock %}

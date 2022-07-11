@@ -1,11 +1,11 @@
 @startuml
 !theme plain
-skinparam defaultFontColor purple
+'skinparam defaultFontColor purple
 skinparam roundCorner 8
 rectangle "URLS\n(urls.py)" as U
 circle "Requête\nHTTP" as RQ
 circle "Réponse\nHTTP\n(html)" as RS
-rectangle "MODÈLE\n(model.py)" as M
+rectangle "MODÈLE\n(models.py)" as M
 rectangle "VUE\n(views.py)" as V
 rectangle "GABARIT\n(<fichier>.html)" as T
 RQ -> U
@@ -13,5 +13,6 @@ U -d-> V : Redirection vers\nla vue appropriée
 M <-> V : Lecture/écriture\ndes données
 T -u-> V
 V -> RS
-caption "Application Django"
+caption Architecture **MVT**
+footer "Application Django"
 @enduml
