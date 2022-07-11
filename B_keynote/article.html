@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Développer, tester et déployer une application Django</h1>
+
+<p>
+Dans cet article nous allons voir dans les grandes lignes le développement, le test et le déploiement d'abord dans un conteneur Docker puis sur un serveur dédié d'une application Django.
+</p>
+
+<h2>Django</h2>
+<p>Django est un framework écrit en Python qui à l'origine fut développé entre 2003 et 2005 par une équipe spécialisée dans la création et la maintenance de sites journalistiques. En septembre 2008 la version 1.0 voit le jour et après de nombreuses améliorations et un développement actif, nous sommes aujourd'hui à la version 4.0</p>
+
+<h3>MVT vs. MVC</h3>
+
+<p>Django utilise le modèle MVT (pour Model View Template) qui diffère légérement du MVC (Model View Controller)</p>
+<p>>En effet, le <strong>MVC</strong> est un modèle de conception qui sépare la représentation des données et les composants qui traitent ces données, tandis que pour le <strong>MVT</strong>, la partie contrôleur est directement prise en charge par le framework</p>
+<ul>
+  <li>Le <strong>modèle</strong> est le composant central de cette architecture et gère les données, la logique ainsi que d’autres contraintes de l’application.</li>
+  <li>La <strong>vue</strong> traite de la façon dont les données seront affichées pour l’utilisateur et fournit divers composants de représentation des données.</li>
+<li>Le <strong>contrôleur</strong> manipule le modèle et rend la vue en agissant comme un pont entre les deux.</li>
+</ul>
+<p><strong>2. Modèle de vue de modèle (MVT)&nbsp;:</strong>&nbsp;<br> il s’agit d’un autre modèle de conception similaire à MVC. Il est également utilisé pour implémenter des interfaces Web et des applications mais contrairement à MVC, la partie contrôleur est prise en charge par le framework lui-même.&nbsp;</p>
+<p>Il a 3 composants et chaque composant a un but précis :&nbsp;</p>
+<ul>
+<li>Ce <strong>modèle</strong> similaire à MVC agit comme une interface pour vos données et est fondamentalement la structure logique derrière l’ensemble de l’application Web qui est représentée par une base de données telle que MySql, PostgreSQL.</li>
+<li>La <strong>vue</strong> exécute la logique métier et interagit avec le modèle et rend le modèle. Il accepte la requête HTTP, puis renvoie les réponses HTTP.</li>
+<li>Le <strong>modèle</strong> est le composant qui différencie MVT de MVC. Les modèles agissent comme la couche de présentation et sont essentiellement le code HTML qui restitue les données. Le contenu de ces fichiers peut être statique ou dynamique.</li>
+</ul>
+<img src="./django.png">
+
+<pre><code>
+""" Models """
+
+import datetime
+from django.db import models
+from django.utils import timezone
+from django.urls import reverse
+
+class Tag(models.Model):
+  """ A tag """
+  name = models.CharField(max_length=15)
+
+  class Meta:
+    """ Ordering """
+    ordering = ['name']
+
+  def __str__(self):
+    return f'{self.name}'
+
+class Article(models.Model):
+  """ An article """
+  title = models.CharField(max_length=100)
+  date = models.DateTimeField('date de publication')
+  entry = models.TextField()
+  tag = models.ManyToManyField(Tag)
+
+  @property
+  def recently_published(self):
+    """ Return True if article was published recently """
+    now = timezone.now()
+    recent = self.date <= now - datetime.timedelta(days=0)
+    return not self.is_archived and recent
+
+  @property
+  def is_archived(self):
+    """ Return True if article was published more than 1 month ago """
+    now = timezone.now()
+    return self.date < now - datetime.timedelta(days=30)
+
+  class Meta: # pylint: disable=too-few-public-methods
+    """ Ordering """
+    ordering = ['-date']
+
+  def get_absolute_url(self):
+    return reverse('detail', args=[str(self.id)])
+
+  def __str__(self):
+    return f'{self.title}'
+</code></pre>
+</body>
+</html>
