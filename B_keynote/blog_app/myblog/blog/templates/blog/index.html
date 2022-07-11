@@ -4,7 +4,7 @@
   <h1>MyBlog!</h1>
   <ul>
   {% for article in articles %}
-    <li>{{ article.date|date:'d/m/Y' }} {{ article.title }}</li>
+    <li><a href="{% url 'detail' article.id %}">{{ article.date|date:'d/m/Y' }} {{ article.title }}</a></li>
   {% empty %}
     <li>C'est vide...</li>
   {% endfor %}
