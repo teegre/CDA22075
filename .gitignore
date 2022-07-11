@@ -3,8 +3,8 @@
 *.fls
 *.synctex.gz
 *.log
-B_keynote/blog_app/venv
-B_keynote/blog_app/myblog/db.sqlite3
-B_keynote/blog_app/myblog/blog/migrations
-B_keynote/blog_app/myblog/blog/__pycache__
-
+venv
+db.sqlite3
+migrations
+__pycache__
+.env

@@ -1,6 +1,7 @@
 @startuml
-'!theme plain
+!theme plain
 skinparam rectancle roundCorner 8
+skinparam noteBackgroundColor LightGoldenRodYellow
 
 folder myblog as B1
 folder blog as B
@@ -26,6 +27,7 @@ B --> V
 B1 -d-> B2
 B2 --> S
 B2 --> U1
+
 note bottom of S : fichier de configuration
 note bottom of U2 : urls de l'application
 note bottom of M : modèles
@@ -33,4 +35,5 @@ note bottom of V : vues
 note top of T : gabarits
 
 caption Arborescence du projet **Django**
+footer Diagramme non exhaustif
 @enduml
