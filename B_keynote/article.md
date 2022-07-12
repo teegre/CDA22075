@@ -270,12 +270,13 @@ urlpatterns = [
 {% extends 'blog/base.html' %}
 {% block title %}MyBlog! {{ article.title }}{% endblock %}
 {% block body %}
-<h1>{{ article.title }}</h1>
-<time>Publié le {{article.date|date:'d/m/Y' }}</time>
-<p>
-{{ article.text }}
-</p>
-<a href="{% url 'index' %}">home</a>
+  <h1>{{ article.title }}</h1>
+  <time>Publié le {{article.date|date:'d/m/Y' }}</time>
+  <article>
+    {{ article.text|safe }}
+    {# Le filtre safe permet le rendu de l'éventuel code html contenu dans l'article #}
+  </article>
+  <a href="{% url 'index' %}">home</a>
 {% endblock %}
 ```
 
@@ -301,6 +302,12 @@ Ajoutons dès à présent un peu de maquillage à notre blog.
 ```css
 html {
   font-family: Roboto, sans-serif;
+  background: lightcoral;
+  color: white;
+}
+
+hr {
+  border: solid pink;
 }
 
 ul {
@@ -313,14 +320,14 @@ h1 {
 }
 
 a {
-  color: black;
+  color: whitesmoke;
   text-decoration: none;
   font-weight: bold;
   transition: .25s ease-in-out;
 }
 
 a:hover {
-  color: red;
+  color: pink;
   transition: .25s;
 }
 
@@ -352,3 +359,8 @@ time {
   </body>
 </html>
 ```
+
+#### Le rendu
+
+![screenshot-5](images/screenshot-5.png)
+
