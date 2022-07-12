@@ -4,13 +4,11 @@ Dans cet article nous allons voir dans les grandes lignes le développement, le 
 
 ## ![django](images/django-logo.png)
 
-**Django** est un web framework écrit en Python qui à l'origine fut développé entre 2003 et 2005 par une équipe spécialisée dans la création et la maintenance de sites journalistiques. En septembre 2008 la version 1.0 voit le jour et après de nombreuses améliorations et un développement actif, nous sommes aujourd'hui à la version 4.0.
+**Django** est un web framework écrit en **Python** qui à l'origine fut développé entre 2003 et 2005 par une équipe spécialisée dans la création et la maintenance de sites journalistiques. En septembre 2008 la version 1.0 voit le jour et après de nombreuses améliorations et un développement actif, nous sommes aujourd'hui à la version 4.0.
 
 ### MVT vs. MVC
 
-**Django** utilise l'architecture **MVT** (pour **Model View Template**) qui diffère légérement du **MVC** (**Model View Controller**) utilisé par **Symfony**.
-
-L'architecture **MVC** est un modèle de conception qui sépare le traitement et la représentation des données :
+L'architecture **MVC** (pour **Model View Controller**) est un modèle de conception qui sépare le traitement et la représentation des données :
 
 ![mvc](images/mvc.png)
 
@@ -18,7 +16,7 @@ L'architecture **MVC** est un modèle de conception qui sépare le traitement et
 * La **vue** gère la représentation et l'affichage des données.
 * Le **contrôleur** joue le rôle de pont entre les deux : il manipule les données et gère le rendu de la **vue**.
 
-En ce qui concerne le **MVT**, la partie contrôleur est directement prise en charge par le framework :
+**Django** utilise l'architecture **MVT** (pour **Model View Template**) qui diffère légérement du **MVC** en ce sens que la partie contrôleur est directement prise en charge par le framework :
 
 ![django](images/django.png)
 
@@ -28,7 +26,7 @@ En ce qui concerne le **MVT**, la partie contrôleur est directement prise en ch
 
 ### Remarque importante
 
-Dans cet article, nous partons du principe que **Python** est installé sur une machine sous **GNU/Linux**.
+Dans cet article, nous partons du principe que **Python** et **Docker** sont installés sous **GNU/Linux**.
 
 #### Création d'un environnement virtuel
 
@@ -234,9 +232,38 @@ Ce fichier constitue la base de tous les autres gabarits...
 {% endblock %}
 ```
 
-### Le rendu
+### Migration et rendu
 
-Pour voir le résultat de notre application, il faut d'abord lancer le serveur **Django** via la ligne de commande :
+Maintenant que tout est prêt, il faut créer la base de données en entrant les commandes suivantes :
+```console
+(venv) > ./manage.py makemigrations
+(venv) > ./manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying sessions.0001_initial... OK
+(venv) >
+```
+**Note** : il faudra exécuter ces commandes après la modification ou l'ajout de modèles.
+
+Maintenant lançons le **serveur Django** via la ligne de commande :
 
 ```console
 (venv) > ./manage.py runserver 8080
@@ -249,6 +276,7 @@ Django version 4.0.6, using settings 'myblog.settings'
 Starting development server at http://127.0.0.1:8080/
 Quit the server with CONTROL-C.
 ```
+
 Puis dans le navigateur taper `localhost:8080` dans la barre d'adresse :
 
 ![screenshot-1](images/screenshot-1.png)
@@ -270,7 +298,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-**Note** : Il est également possible d'ajouter des articles depuis la console d'administration disponible à l'adresse : `localhost:8080/admin`.
+**Note** : Il est également possible d'ajouter des articles depuis la **console d'administration** disponible à l'adresse : `localhost:8080/admin`.
 Avant cela, il est nécessaire de créer un *super utilisateur* via la commande `./manage.py createsuperuser` comme suit :
 
 ```console
@@ -282,7 +310,7 @@ Password (again):
 Superuser created successfully.
 (venv) >
 ```
-Il est ensuite possible de se connecter à la console d'administration à l'adresse indiquée plus haut.
+Il est ensuite possible de se connecter à la **console d'administration** à l'adresse indiquée plus haut.
 
 Après la création de quelques articles, la page ressemble à ceci :
 
@@ -450,18 +478,93 @@ C'est ici que les choses sérieuses commencent !
 
 A défaut de serveur physique, nous allons tester notre application avec **Docker**. Mais avant cela quelques modifications s'imposent.
 
-### Le fichier `settings.py`
+### Le fichier de configuration `settings.py`
+
+#### SECRET_KEY
+
+Lors de la création du projet **Django**, la commande `django-admin` ajoute automatiquement au fichier `settings.py` une clef secrète `SECRET_KEY` générée aléatoirement. Cette clef assure la sécurisation des données signées et doit bien évidemment être gardée secrète. Nous allons donc la stocker dans un fichier externe, appelé `.env`, et le module `dotenv` nous permettra d'importer la valeur de `SECRET_KEY` en tant que *variable d'environnement*.
+
+Commençons par installer le module :
+
+```console
+(venv) > pip install python-dotenv
+Collecting python-dotenv
+  Using cached python_dotenv-0.20.0-py3-none-any.whl (17 kB)
+Installing collected packages: python-dotenv
+Successfully installed python-dotenv-0.20.0
+(venv) >
+```
+
+Puis dans le fichier `settings.py` :
 
 ```python
-from dotenv import load_dotenv
-
-load_dotenv()
-
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = bool(os.getenv('DEBUG') == 'True')
+# À ajouter en tête du fichier.
+import os                      # +
+from pathlib import Path
+from dotenv import load_dotenv # +
+                               # +
+load_dotenv()                  # +
+                               # +
 ```
+
+Ensuite modifions la variable `SECRET_KEY` :
+
+```python
+SECRET_KEY = os.getenv('SECRET_KEY')
+```
+
+Et générons une nouvelle clef :
+
+```console
+(venv) > ./manage.py shell -c \
+> 'from django.core.management import utils; \
+> print(f"SECRET_KEY=\"{utils.get_random_secret_key()}\"")' > .env
+(venv) > cat .env
+SECRET_KEY="MySuperComplicatedAndSecureSecretKey"
+(venv) >
+```
+
+#### DEBUG
+
+Par défaut, la valeur `True` est assignée à la variable `DEBUG`. Ce qui a pour effet de nous donner des informations utiles en cas d'erreur dans notre application. Cependant, en mode production ce fonctionnement n'est pas désirable. Nous allons procéder de la même façon que pour la variable `SECRET_KEY` en commençant par ajouter la ligne suivante à notre fichier `.env` :
 
 ```shell
 SECRET_KEY="MySuperComplicatedAndSecureSecretKey"
 DEBUG="False"
+```
+
+Dans le fichier `settings.py`, modifions la varible `DEBUG` comme suit :
+
+```python
+DEBUG = bool(os.getenv('DEBUG') == 'True')
+```
+
+De cette manière si nous voulons activer le **mode debug** il nous suffira d'assigner la valeur `"True"` à la variable d'environnement `DEBUG` dans le fichier `.env`
+
+**Note** : dans le cas de l'utilisation de **git**, ne pas oublier d'ajouter `.env` au fichier `.gitignore`.
+
+#### ALLOWED_HOSTS et CSRF_TRUSTED_ORIGINS
+
+Modifier la valeur de la variable `ALLOWED_HOSTS` :
+
+```python
+ALLOWED_HOSTS = ['*']
+```
+
+Et ajouter la variable `CSRF_TRUSTED_ORIGINS`, comme suit :
+
+```python
+CSRF_TRUSTED_ORIGINS = ['http://0.0.0.0/*'] # +
+```
+
+Nous pourrons ainsi accéder à notre application via **Docker** à l'adresse `http://0.0.0.0`.
+
+#### STATIC_ROOT
+
+Mauvaise nouvelle, en mode production, **Django** ne sert plus automatiquement les **fichiers statiques**. Cette tâche sera déléguée à **Nginx** comme nous le verrons plus tard.
+La variable `STATIC_ROOT` permet de définir l'emplacement ou seront copiés les **fichiers statiques**.
+
+```python
+STATIC_ROOT = './static/' # +
+STATIC_URL = '/static/'
 ```
