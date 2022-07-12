@@ -10,7 +10,7 @@ Dans cet article nous allons voir dans les grandes lignes le développement, le 
 
 **Django** utilise l'architecture **MVT** (pour **Model View Template**) qui diffère légérement du **MVC** (**Model View Controller**) utilisé par **Symfony**.
 
-Le **MVC** est un modèle de conception qui sépare le traitement et la représentation des données :
+L'architecture **MVC** est un modèle de conception qui sépare le traitement et la représentation des données :
 
 ![mvc](images/mvc.png)
 
@@ -170,10 +170,11 @@ Après la création de quelques articles, la page ressemble à ceci :
 
 ![screenshot-2](images/screenshot-2.png)
 
+En l'état, nous n'avons que la liste des articles. La prochaine étape consistera donc à transformer les éléments de la liste en **liens** vers le **contenu des articles**.
+
 ### Afficher un article
 
-En l'état, nous n'avons que la liste des articles. La prochaine étape consiste à transformer les éléments de la liste en **lien** vers le **contenu des articles**.
-Nous devons donc d'abord créer une nouvelle **vue** et son **gabarit** associé, puis  une **url**, et pour finir, modifier le gabarit `index.html` afin de rendre les **articles consultables**.
+Nous devons tout d'abord créer une nouvelle **vue** et son **gabarit** associé, puis  une **url**, et pour finir, modifier le gabarit `index.html` afin de rendre les **articles consultables**.
 
 #### blog/views.py
 
@@ -238,10 +239,10 @@ urlpatterns = [
 {% endblock %}
 ```
 
-Et voici le résultat :
+Voici le résultat :
 
 ![screenshot-3](images/screenshot-3.png)
 
-Lorsqu'on clique sur le premier lien, on obtient :
+Et lorsque l'on clique sur le premier lien, on obtient :
 
 ![screenshot-4](images/screenshot-4.png)
