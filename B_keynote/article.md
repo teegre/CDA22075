@@ -26,11 +26,90 @@ En ce qui concerne le **MVT**, la partie contrôleur est directement prise en ch
 * La **vue** accède aux données et en gère le rendu.
 * Le **gabarit** (ou **template**) est utilisé par la vue pour le rendu des données.
 
+### Remarque importante
+
+Dans cet article, nous partons du principe que **Python** est installé sur une machine sous **GNU/Linux**.
+
+#### Création d'un environnement virtuel
+
+Pour faciliter les choses, nous allons créer un **environnement virtuel** ce qui signifie que tous les **modules Python** dont nous aurons besoin seront uniquement *installés dans l'environnement virtuel* sans surcharger le système.
+
+```console
+> python -m venv venv
+> source venv/bin/activate
+(venv) >
+```
+La première commande lance la création de **l'environnement virtuel**, et la seconde l'active.
+
+**Note** : la commande `deactivate` permet de sortir d'un **environnement virtuel**.
+
+Mettons à jour **pip**, le gestionnaire de paquets de **Python**.
+
+```console
+(venv) > pip install --upgrade pip
+Requirement already satisfied: pip in ./venv/lib/python3.10/site-packages (22.0.4)
+Collecting pip
+  Using cached pip-22.1.2-py3-none-any.whl (2.1 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 22.0.4
+    Uninstalling pip-22.0.4:
+      Successfully uninstalled pip-22.0.4
+Successfully installed pip-22.1.2
+(venv) >
+```
+
+Puis installons **Django** :
+
+```console
+(venv) > pip install django
+Collecting django
+  Using cached Django-4.0.6-py3-none-any.whl (8.0 MB)
+Collecting sqlparse>=0.2.2
+  Using cached sqlparse-0.4.2-py3-none-any.whl (42 kB)
+Collecting asgiref<4,>=3.4.1
+  Using cached asgiref-3.5.2-py3-none-any.whl (22 kB)
+Installing collected packages: sqlparse, asgiref, django
+Successfully installed asgiref-3.5.2 django-4.0.6 sqlparse-0.4.2
+(venv) >
+```
+
 ### Structure du projet
 
 Ici, nous allons créer un simple **blog** dont voici l'arborescence :
 
 ![tree](images/project_structure.png)
+
+Avant de commencer, nous devons d'abord créer le **projet** puis l'**application**.
+Pour cela, il suffit d'entrer les commandes suivantes dans un terminal :
+
+```console
+(venv) > django-admin startproject myblog
+(venv) > cd myblog
+(venv) > ./manage.py startapp blog
+(venv) >
+```
+
+La dernière étape avant de commencer à coder consiste à modifier le fichier de configuration `settings.py` situé dans le répertoire `myblog/` :
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'blog', # + Ajout de notre application ici.
+]
+```
+
+```python
+# Changement de la langue de notre application...
+LANGUAGE_CODE = 'fr-fr'
+# ... et du fuseau horaire.
+TIME_ZONE = 'Europe/Paris'
+```
 
 ### Le modèle
 
@@ -160,7 +239,7 @@ Ce fichier constitue la base de tous les autres gabarits...
 Pour voir le résultat de notre application, il faut d'abord lancer le serveur **Django** via la ligne de commande :
 
 ```console
-> ./manage.py runserver 8080
+(venv) > ./manage.py runserver 8080
 Watching for file changes with StatReloader
 Performing system checks...
 
@@ -177,32 +256,31 @@ Puis dans le navigateur taper `localhost:8080` dans la barre d'adresse :
 #### Ajout d'un article
 
 ```console
-> ./manage.py shell
+(venv) > ./manage.py shell
 Python 3.10.5 (main, Jun  6 2022, 18:49:26) [GCC 12.1.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 (InteractiveConsole)
 >>> from blog.models import Article
 >>> from django.utils import timezone
 >>> a = Article()
->>> a.title = "Mon premier article"
+>>> a.title = 'Mon premier article'
 >>> a.date = timezone.now()
->>> a.text = "Ceci est mon premier article"
+>>> a.text = 'Ceci est mon premier article'
 >>> a.save()
 >>>
-
 ```
 
 **Note** : Il est également possible d'ajouter des articles depuis la console d'administration disponible à l'adresse : `localhost:8080/admin`.
 Avant cela, il est nécessaire de créer un *super utilisateur* via la commande `./manage.py createsuperuser` comme suit :
 
 ```console
-> ./manage.py createsuperuser
+(venv) > ./manage.py createsuperuser
 Nom d’utilisateur: admin
 Adresse électronique: admin@myblog.com
 Password:
 Password (again):
 Superuser created successfully.
->
+(venv) >
 ```
 Il est ensuite possible de se connecter à la console d'administration à l'adresse indiquée plus haut.
 
@@ -364,3 +442,26 @@ time {
 
 ![screenshot-5](images/screenshot-5.png)
 
+Magnifique !
+
+## Test de l'application en production
+
+C'est ici que les choses sérieuses commencent !
+
+A défaut de serveur physique, nous allons tester notre application avec **Docker**. Mais avant cela quelques modifications s'imposent.
+
+### Le fichier `settings.py`
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = bool(os.getenv('DEBUG') == 'True')
+```
+
+```shell
+SECRET_KEY="MySuperComplicatedAndSecureSecretKey"
+DEBUG="False"
+```
