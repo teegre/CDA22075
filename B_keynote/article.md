@@ -28,11 +28,11 @@ En ce qui concerne le **MVT**, la partie contrôleur est directement prise en ch
 
 ### Structure du projet
 
-Ici, nous allons créer un simple blog dont voici l'arborescence :
+Ici, nous allons créer un simple **blog** dont voici l'arborescence :
 
 ![tree](images/project_structure.png)
 
-### Détail des éléments constitutifs d'une application **Django**
+### Le modèle
 
 Nous allons définir un **modèle** pour notre application. Un blog étant composé d'articles, nous allons créer un **modèle** qui représentera un **article de notre blog**.
 
@@ -67,6 +67,9 @@ from blog.models import Article
 
 admin.site.register(Article) # +
 ```
+### La vue
+
+Maintenant que notre modèle est défini, créons notre **vue** qui se chargera d'afficher tous les articles.
 
 #### blog/views.py
 
@@ -81,20 +84,23 @@ class IndexView(generic.ListView):
   # Nom de l'objet dans le gabarit
   context_object_name = 'articles'
 ```
+#### Ajout de l'URL
 
-#### myblog/urls.py
+##### URLs du site web : myblog/urls.py
 
 ```python
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path # +
 
 urlpatterns = [
   path('admin/', admin.site.urls),
-  path('', include('blog.urls'))   # +
+  # Ici on inclut le fichier qui contient les URLs
+  # de notre application.
+  path('', include('blog.urls'))      # +
 ]
 ```
 
-#### blog/urls.py
+##### URLs de l'application : blog/urls.py
 
 ```python
 from django.urls import path
@@ -104,6 +110,8 @@ urlpatterns = [
   path('', IndexView.as_view(), name='index'),
 ]
 ```
+
+### Le gabarit (template)
 
 #### blog/templates/blog/base.html
 
@@ -151,8 +159,8 @@ Ce fichier constitue la base de tous les autres gabarits...
 
 Pour voir le résultat de notre application, il faut d'abord lancer le serveur **Django** via la ligne de commande :
 
-```
-> ./manage.py runserver 8000
+```console
+> ./manage.py runserver 8080
 Watching for file changes with StatReloader
 Performing system checks...
 
@@ -166,6 +174,38 @@ Puis dans le navigateur taper `localhost:8080` dans la barre d'adresse :
 
 ![screenshot-1](images/screenshot-1.png)
 
+#### Ajout d'un article
+
+```console
+> ./manage.py shell
+Python 3.10.5 (main, Jun  6 2022, 18:49:26) [GCC 12.1.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from blog.models import Article
+>>> from django.utils import timezone
+>>> a = Article()
+>>> a.title = "Mon premier article"
+>>> a.date = timezone.now()
+>>> a.text = "Ceci est mon premier article"
+>>> a.save()
+>>>
+
+```
+
+**Note** : Il est également possible d'ajouter des articles depuis la console d'administration disponible à l'adresse : `localhost:8080/admin`.
+Avant cela, il est nécessaire de créer un *super utilisateur* via la commande `./manage.py createsuperuser` comme suit :
+
+```console
+> ./manage.py createsuperuser
+Nom d’utilisateur: admin
+Adresse électronique: admin@myblog.com
+Password:
+Password (again):
+Superuser created successfully.
+>
+```
+Il est ensuite possible de se connecter à la console d'administration à l'adresse indiquée plus haut.
+
 Après la création de quelques articles, la page ressemble à ceci :
 
 ![screenshot-2](images/screenshot-2.png)
@@ -174,7 +214,7 @@ En l'état, nous n'avons que la liste des articles. La prochaine étape consiste
 
 ### Afficher un article
 
-Nous devons tout d'abord créer une nouvelle **vue** et son **gabarit** associé, puis  une **url**, et pour finir, modifier le gabarit `index.html` afin de rendre les **articles consultables**.
+Nous devons tout d'abord créer une nouvelle **vue** et son **gabarit** associé, puis  une **URL**, et pour finir, modifier le gabarit `index.html` afin de rendre les **articles consultables**.
 
 #### blog/views.py
 
@@ -246,3 +286,69 @@ Voici le résultat :
 Et lorsque l'on clique sur le premier lien, on obtient :
 
 ![screenshot-4](images/screenshot-4.png)
+
+### Les fichiers statiques
+
+Dans **Django** les fichiers statiques sont des fichiers supplémentaires dont nous avons besoin pour notre site web, par exemple des fichiers **Javascript**, des **images** ou du **CSS**.
+Au cours du développement, ces fichiers sont stockés dans le répertoire `blog/static/blog/`.
+
+![static_files](images/project_structure_static_files.png)
+
+Ajoutons dès à présent un peu de maquillage à notre blog.
+
+#### blog/static/blog/css/styles.css
+
+```css
+html {
+  font-family: Roboto, sans-serif;
+}
+
+ul {
+  list-style: none;
+  display: contents;
+}
+
+h1 {
+  font-size: xxx-large;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+  transition: .25s ease-in-out;
+}
+
+a:hover {
+  color: red;
+  transition: .25s;
+}
+
+time {
+  font-size: small;
+  font-style: italic;
+}
+```
+
+#### Chargement des fichiers statiques : blog/templates/blog/base.html
+
+```django
+{% load static %} {# + #}
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/styles.css' %}"> {# + #}
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body>
+    {% block body %}
+    {% endblock %}
+    <hr>
+    <footer>
+      <span>© {% now 'Y' %} myblog</span>
+    </footer>
+  </body>
+</html>
+```

@@ -1,0 +1,29 @@
+html {
+  font-family: Roboto, sans-serif;
+}
+
+ul {
+  list-style: none;
+  display: contents;
+}
+
+h1 {
+  font-size: xxx-large;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+  transition: .25s ease-in-out;
+}
+
+a:hover {
+  color: red;
+  transition: .25s;
+}
+
+time {
+  font-size: small;
+  font-style: italic;
+}
