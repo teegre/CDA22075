@@ -127,7 +127,7 @@ Le modèle **deviendra** une **table** dans une **base de données** et contiend
 
 La **clef primaire** sera automatiquement créée par **Django** et porte le nom de `id`.
 
-#### blog/models.py
+#### myblog/blog/models.py
 
 ```python
 from django.db import models
@@ -141,7 +141,7 @@ class Article(models.Model):
 Ajout du modèle à la console d'administration (nous en verrons l'utilité plus tard):
 
 ```python
-# blog/admin.py
+# myblog/blog/admin.py
 
 from django.contrib import admin
 from blog.models import Article
@@ -152,7 +152,7 @@ admin.site.register(Article) # +
 
 Maintenant que notre modèle est défini, créons notre **vue** qui se chargera d'afficher tous les articles.
 
-#### blog/views.py
+#### myblog/blog/views.py
 
 ```python
 from django.views import generic
@@ -205,14 +205,14 @@ Ce fichier constitue la base de tous les autres gabarits...
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title> {# definition du bloc title #}
   </head>
   <body>
-    {% block body %}
+    {% block body %} {# définition du block body #}
     {% endblock %}
     <hr>
     <footer>
-      <span>© {% now 'Y' %} myblog</span>
+      <span>© {% now 'Y' %} myblog</span> {# affiche l'année en cours #}
     </footer>
   </body>
 </html>
@@ -240,6 +240,7 @@ Ce fichier constitue la base de tous les autres gabarits...
 ### Migration et rendu
 
 Maintenant que tout est prêt, il faut créer la base de données en entrant les commandes suivantes :
+
 ```console
 (venv) > ./manage.py makemigrations
 (venv) > ./manage.py migrate
@@ -266,6 +267,7 @@ Running migrations:
   Applying sessions.0001_initial... OK
 (venv) >
 ```
+
 **Note** : il faudra exécuter ces commandes après la modification ou l'ajout de modèles.
 
 Maintenant lançons le **serveur Django** via la ligne de commande :
@@ -327,7 +329,7 @@ En l'état, nous n'avons que la liste des articles. La prochaine étape consiste
 
 Nous devons tout d'abord créer une nouvelle **vue** et son **gabarit** associé, puis  une **URL**, et pour finir, modifier le gabarit `index.html` afin de rendre les **articles consultables**.
 
-#### blog/views.py
+#### myblog/blog/views.py
 
 ```python
 from django.views import generic
@@ -344,7 +346,7 @@ class ArticleView(generic.DetailView): # +
   context_object_name = 'article'      # +
 ```
 
-#### blog/urls.py
+#### myblog/blog/urls.py
 
 ```python
 from django.urls import path
@@ -408,7 +410,7 @@ Au cours du développement, ces fichiers sont stockés dans le répertoire `blog
 
 Ajoutons dès à présent un peu de maquillage à notre blog.
 
-#### blog/static/blog/css/styles.css
+#### myblog/blog/static/blog/css/styles.css
 
 ```css
 html {
@@ -448,7 +450,7 @@ time {
 }
 ```
 
-#### Chargement des fichiers statiques : blog/templates/blog/base.html
+#### Chargement des fichiers statiques : myblog/blog/templates/blog/base.html
 
 ```django
 {% load static %} {# + #}
@@ -475,7 +477,7 @@ time {
 
 ![screenshot-5](images/screenshot-5.png)
 
-Magnifique !
+Tout simplement magnifique !
 
 ## Test de l'application en production
 
@@ -500,7 +502,7 @@ Successfully installed python-dotenv-0.20.0
 (venv) >
 ```
 
-Puis dans le fichier `settings.py` :
+Puis dans le fichier `myblog/myblog/settings.py` :
 
 ```python
 # À ajouter en tête du fichier.
@@ -567,7 +569,7 @@ Nous pourrons ainsi accéder à notre application via **Docker** à l'adresse `h
 #### STATIC_ROOT
 
 Mauvaise nouvelle, en mode production, **Django** ne sert plus automatiquement les **fichiers statiques**. Cette tâche sera déléguée à **Nginx** comme nous le verrons plus tard.
-La variable `STATIC_ROOT` permet de définir l'emplacement ou seront copiés les **fichiers statiques**.
+La variable `STATIC_ROOT` permet de définir l'emplacement où seront copiés les **fichiers statiques**.
 
 ```python
 STATIC_ROOT = './static/' # +
