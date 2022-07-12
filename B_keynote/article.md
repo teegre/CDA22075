@@ -30,7 +30,7 @@ Dans cet article, nous partons du principe que **Python** et **Docker** sont ins
 
 #### Création d'un environnement virtuel
 
-Pour faciliter les choses, nous allons créer un **environnement virtuel** ce qui signifie que tous les **modules Python** dont nous aurons besoin seront uniquement *installés dans l'environnement virtuel* sans surcharger le système.
+Pour faciliter les choses, nous allons créer un **environnement virtuel** ce qui signifie que tous les **modules Python** dont nous aurons besoin seront uniquement installés *dans l'environnement virtuel* sans surcharger le système.
 
 ```console
 > python -m venv venv
@@ -74,7 +74,11 @@ Successfully installed asgiref-3.5.2 django-4.0.6 sqlparse-0.4.2
 
 ### Structure du projet
 
-Ici, nous allons créer un simple **blog** dont voici l'arborescence :
+Ici, nous allons créer un simple **blog** :
+
+![uml](images/app.png)
+
+Et l'arborescence du projet **Django** ressemblera à ceci :
 
 ![tree](images/project_structure.png)
 
@@ -152,6 +156,7 @@ Maintenant que notre modèle est défini, créons notre **vue** qui se chargera 
 
 ```python
 from django.views import generic
+from .models import Article
 
 class IndexView(generic.ListView):
   # Modèle utilisé pour la vue
