@@ -37,6 +37,7 @@ Pour faciliter les choses, nous allons créer un **environnement virtuel** ce qu
 > source venv/bin/activate
 (venv) >
 ```
+
 La première commande lance la création de **l'environnement virtuel**, et la seconde l'active.
 
 **Note** : la commande `deactivate` permet de sortir d'un **environnement virtuel**.
@@ -148,6 +149,7 @@ from blog.models import Article
 
 admin.site.register(Article) # +
 ```
+
 ### La vue
 
 Maintenant que notre modèle est défini, créons notre **vue** qui se chargera d'afficher tous les articles.
@@ -166,6 +168,7 @@ class IndexView(generic.ListView):
   # Nom de l'objet dans le gabarit
   context_object_name = 'articles'
 ```
+
 #### Ajout de l'URL
 
 ##### URLs du site web : myblog/urls.py
@@ -317,6 +320,7 @@ Password (again):
 Superuser created successfully.
 (venv) >
 ```
+
 Il est ensuite possible de se connecter à la **console d'administration** à l'adresse indiquée plus haut.
 
 Après la création de quelques articles, la page ressemble à ceci :
@@ -374,7 +378,6 @@ urlpatterns = [
   {% endfor %}
   </ul>
 {% endblock %}
-
 ```
 
 #### blog/templates/blog/detail.html
@@ -568,7 +571,7 @@ Nous pourrons ainsi accéder à notre application via **Docker** à l'adresse `h
 
 #### STATIC_ROOT
 
-Mauvaise nouvelle, en mode production, **Django** ne sert plus automatiquement les **fichiers statiques**. Cette tâche sera déléguée à **Nginx** comme nous le verrons plus tard.
+Mauvaise nouvelle, en production, **Django** ne sert plus automatiquement les **fichiers statiques**. Cette tâche sera déléguée à **Nginx** comme nous le verrons plus tard.
 La variable `STATIC_ROOT` permet de définir l'emplacement où seront copiés les **fichiers statiques**.
 
 ```python
