@@ -145,9 +145,9 @@ Ajout du modèle à la console d'administration (nous en verrons l'utilité plus
 # myblog/blog/admin.py
 
 from django.contrib import admin
-from blog.models import Article
+from blog.models import Article   # +
 
-admin.site.register(Article) # +
+admin.site.register(Article)      # +
 ```
 
 ### La vue
@@ -171,7 +171,7 @@ class IndexView(generic.ListView):
 
 #### Ajout de l'URL
 
-##### URLs du site web : myblog/urls.py
+##### URLs du site web : myblog/myblog/urls.py
 
 ```python
 from django.contrib import admin
@@ -185,7 +185,7 @@ urlpatterns = [
 ]
 ```
 
-##### URLs de l'application : blog/urls.py
+##### URLs de l'application : myblog/blog/urls.py
 
 ```python
 from django.urls import path
@@ -198,7 +198,7 @@ urlpatterns = [
 
 ### Le gabarit (template)
 
-#### blog/templates/blog/base.html
+#### myblog/blog/templates/blog/base.html
 
 Ce fichier constitue la base de tous les autres gabarits...
 
@@ -362,7 +362,7 @@ urlpatterns = [
 ]
 ```
 
-#### blog/templates/blog/index.html
+#### myblog/blog/templates/blog/index.html
 
 ```django
 {% extends 'blog/base.html' %}
@@ -380,7 +380,7 @@ urlpatterns = [
 {% endblock %}
 ```
 
-#### blog/templates/blog/detail.html
+#### myblog/blog/templates/blog/detail.html
 
 ```django
 {% extends 'blog/base.html' %}
@@ -407,7 +407,7 @@ Et lorsque l'on clique sur le premier lien, on obtient :
 ### Les fichiers statiques
 
 Dans **Django** les fichiers statiques sont des fichiers supplémentaires dont nous avons besoin pour notre site web, par exemple des fichiers **Javascript**, des **images** ou du **CSS**.
-Au cours du développement, ces fichiers sont stockés dans le répertoire `blog/static/blog/`.
+Au cours du développement, ces fichiers sont stockés dans le répertoire `myblog/blog/static/blog/`.
 
 ![static_files](images/project_structure_static_files.png)
 
@@ -463,6 +463,8 @@ time {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="{% static 'blog/css/styles.css' %}"> {# + #}
+    {# Pour faire bonne mesure ajoutons une favicon #}
+    <link rel="shortcut icon" type="img/x-icon" href="{% static 'blog/favicon.ico' %}">
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
@@ -564,6 +566,7 @@ ALLOWED_HOSTS = ['*']
 Et ajouter la variable `CSRF_TRUSTED_ORIGINS`, comme suit :
 
 ```python
+# Sans cela l'accès à la console d'aministration génère une exception.
 CSRF_TRUSTED_ORIGINS = ['http://0.0.0.0/*'] # +
 ```
 
@@ -578,3 +581,10 @@ La variable `STATIC_ROOT` permet de définir l'emplacement où seront copiés le
 STATIC_ROOT = './static/' # +
 STATIC_URL = '/static/'
 ```
+
+### Docker
+
+![docker](images/docker-logo.jpg)
+
+> **Docker** est une plateforme permettant de lancer certaines applications dans des conteneurs logiciels.
+> -- <cite>Source : Wikipédia</cite>
