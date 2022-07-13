@@ -1,6 +1,6 @@
 # Développer et déployer une application Django
 
-Dans cet article nous allons voir dans les grandes lignes le développement, le test et le déploiement d'abord dans un conteneur **Docker** puis sur un serveur dédié d'une application **Django**.
+Dans cet article nous allons voir dans les grandes lignes le développement, le test et le déploiement en **production** dans un conteneur **Docker**.
 
 ## ![django](images/django-logo.png)
 
@@ -20,7 +20,7 @@ L'architecture **MVC** (pour **Model View Controller**) est un modèle de concep
 
 ![django](images/django.png)
 
-* Le **modèle** est similaire à l'architecture **MVC**.
+* Le **modèle** est semblable à celui de l'architecture **MVC**.
 * La **vue** accède aux données et en gère le rendu.
 * Le **gabarit** (ou **template**) est utilisé par la vue pour le rendu des données.
 
@@ -28,9 +28,15 @@ L'architecture **MVC** (pour **Model View Controller**) est un modèle de concep
 
 Dans cet article, nous partons du principe que **Python** et **Docker** sont installés sous **GNU/Linux**.
 
-#### Création d'un environnement virtuel
+## MyBlog!
 
-Pour faciliter les choses, nous allons créer un **environnement virtuel** ce qui signifie que tous les **modules Python** dont nous aurons besoin seront uniquement installés *dans l'environnement virtuel* sans surcharger le système.
+Voici l'application que nous allons créer : un simple **blog**
+
+![uml](images/app.png)
+
+### Création d'un environnement virtuel
+
+Pour faciliter les choses, nous allons créer un **environnement virtuel**. Ce qui signifie que tous les **modules Python** dont nous aurons besoin seront uniquement installés *dans l'environnement virtuel* sans surcharger le système.
 
 ```console
 > python -m venv venv
@@ -58,7 +64,9 @@ Successfully installed pip-22.1.2
 (venv) >
 ```
 
-Puis installons **Django** :
+### Installation de Django :
+
+Pour installer **Django**, il suffit d'entrer la commande suivante :
 
 ```console
 (venv) > pip install django
@@ -73,17 +81,9 @@ Successfully installed asgiref-3.5.2 django-4.0.6 sqlparse-0.4.2
 (venv) >
 ```
 
-### Structure du projet
+### Création du projet et de l'application
 
-Ici, nous allons créer un simple **blog** :
-
-![uml](images/app.png)
-
-Et l'arborescence du projet **Django** ressemblera à ceci :
-
-![tree](images/project_structure.png)
-
-Avant de commencer, nous devons d'abord créer le **projet** puis l'**application**.
+Nous devons pour commencer, créer notre **projet** puis notre **application**.
 Pour cela, il suffit d'entrer les commandes suivantes dans un terminal :
 
 ```console
@@ -92,6 +92,10 @@ Pour cela, il suffit d'entrer les commandes suivantes dans un terminal :
 (venv) > ./manage.py startapp blog
 (venv) >
 ```
+
+L'arborescence du projet **Django** ressemble à ceci :
+
+![tree](images/project_structure.png)
 
 La dernière étape avant de commencer à coder consiste à modifier le fichier de configuration `settings.py` situé dans le répertoire `myblog/` :
 
@@ -169,9 +173,9 @@ class IndexView(generic.ListView):
   context_object_name = 'articles'
 ```
 
-#### Ajout de l'URL
+### Ajout de l'URL
 
-##### URLs du site web : myblog/myblog/urls.py
+#### URLs du site web : myblog/myblog/urls.py
 
 ```python
 from django.contrib import admin
@@ -185,7 +189,7 @@ urlpatterns = [
 ]
 ```
 
-##### URLs de l'application : myblog/blog/urls.py
+#### URLs de l'application : myblog/blog/urls.py
 
 ```python
 from django.urls import path
@@ -478,7 +482,7 @@ time {
 </html>
 ```
 
-#### Le rendu
+### Le rendu
 
 ![screenshot-5](images/screenshot-5.png)
 
@@ -578,7 +582,7 @@ Mauvaise nouvelle, en production, **Django** ne sert plus automatiquement les **
 La variable `STATIC_ROOT` permet de définir l'emplacement où seront copiés les **fichiers statiques**.
 
 ```python
-STATIC_ROOT = './static/' # +
+STATIC_ROOT = '/app_data/static/' # +
 STATIC_URL = '/static/'
 ```
 
@@ -588,3 +592,217 @@ STATIC_URL = '/static/'
 
 > **Docker** est une plateforme permettant de lancer certaines applications dans des conteneurs logiciels.
 > -- <cite>Source : Wikipédia</cite>
+
+![server](images/docker-container.png)
+
+### Gunicorn
+
+![gunicorn](images/gunicorn-logo.png)
+
+**Gunicorn** est un **serveur d'application** (écrit en **Python**) qui sera utilisé à la place du **serveur Django**, ce dernier n'étant pas prévu pour être utilisé en **production**.
+
+### Nginx
+
+![nginx](images/nginx-logo.png)
+
+**Nginx** est un logiciel de **serveur Web** ainsi qu'un **proxy inverse** (**reverse proxy**).
+C'est notamment cette fonctionnalité qui nous intéresse. Contrairement au **serveur proxy** qui permet à un utilisateur **d'accéder au réseau Internet**, le **proxy inverse** permet à un utilisateur d'Internet **d'accéder à des serveurs internes** (ici, en l'occurrence, **Gunicorn**).
+
+**Nginx** sera également utile en tant que **serveur des fichiers statiques**.
+
+### Le conteneur Docker
+
+À ce stade, nous avons donc besoin de créer :
+
+*  Un **Dockerfile** pour **Python** et ses modules (**Django** et **Gunicorn**).
+*  Un autre **Dockerfile** pour **Nginx**.
+*  Un **script** qui sera exécuté au **lancement** du **conteneur**.
+*  Et un fichier **docker-compose** pour coordonner le tout.
+
+### Le Dockerfile pour Python et les modules Gunicorn et Django
+
+Pour commencer nous allons créer un fichier qui contient tous les **modules Python** utilisés dans notre projet.
+
+**Note** : Ce fichier sera utilisé pour installer tous les modules nécessaires lors de la création du **conteneur Docker**.
+
+```console
+(venv) > pip freeze > requirements.txt
+(venv) > cat requirements.txt
+asgiref==3.5.2
+Django==4.0.6
+python-dotenv==0.20.0
+sqlparse==0.4.2
+```
+Ensuite, ajoutons le module **Gunicorn** au fichier :
+
+#### myblog/requirements.txt
+
+```console
+asgiref==3.5.2
+Django==4.0.6
+python-dotenv==0.20.0
+sqlparse==0.4.2
+gunicorn==20.1.0
+```
+Maintenant, créons notre fichier **Dockerfile** :
+
+#### myblog/Dockerfile
+
+```docker
+FROM python:alpine3.16
+
+RUN pip install --upgrade pip
+
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+WORKDIR /app
+
+ENTRYPOINT ["./entrypoint.sh"]
+```
+
+Puis notre **script** `entrypoint.sh` :
+
+#### myblog/entrypoint.sh
+
+```shell
+#! /usr/bin/env sh
+
+set -e
+
+./manage.py makemigrations --no-input
+./manage.py migrate --no-input
+./manage.py collectstatic --no-input
+
+gunicorn myblog.wsgi:application --bind "0.0.0.0:8080"
+```
+
+Et rendons le exécutable :
+
+```console
+(venv) > chmod +x entrypoint.sh
+(venv) >
+```
+
+### Le Dockerfile pour Nginx
+
+Même chose pour **Nginx** :
+
+#### myblog/nginx/Dockerfile
+
+```docker
+FROM nginx:latest
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+```
+
+Et maintenant le fichier de configuration :
+
+#### myblog/nginx/nginx.conf
+
+```nginx
+upstream myblog {
+  server myblog_django:8080;
+}
+
+server {
+  listen 80;
+
+  location / {
+    proxy_pass http://myblog;
+
+  location /static/ {
+    alias /app_data/static/;
+```
+
+### Le fichier docker-compose
+
+Dernière étape, la création du fichier **docker-compose** :
+
+#### myblog/docker-compose.yml
+
+```yml
+version: "3.8"
+  myblog_django:
+    volumes:
+      - static:/app_data/static
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/app_data/static
+    ports:
+      - "80:80"
+    depends_on:
+      - myblog_django
+
+volumes:
+  static:
+```
+
+### L'instant de vérité
+
+Maintenant que tout est prêt, construisons le **conteneur Docker** :
+
+```console
+(venv) > docker-compose up --build
+[+] Building 32.9s (17/17) FINISHED
+
+...
+
+ ⠿ Network myblog_default            Created                                                                                                                                                                                   0.3s
+ ⠿ Container myblog-myblog_django-1  Created                                                                                                                                                                                   1.2s
+ ⠿ Container myblog-nginx-1          Created                                                                                                                                                                                   0.6s
+Attaching to myblog-myblog_django-1, myblog-nginx-1
+myblog-myblog_django-1  | No changes detected
+myblog-myblog_django-1  | Operations to perform:
+myblog-myblog_django-1  |   Apply all migrations: admin, auth, contenttypes, sessions
+myblog-myblog_django-1  | Running migrations:
+myblog-myblog_django-1  |   No migrations to apply.
+myblog-nginx-1          | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+myblog-nginx-1          | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+myblog-nginx-1          | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+myblog-nginx-1          | 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+myblog-nginx-1          | 10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf differs from the packaged version
+myblog-nginx-1          | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+myblog-nginx-1          | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+myblog-nginx-1          | /docker-entrypoint.sh: Configuration complete; ready for start up
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: using the "epoll" event method
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: nginx/1.23.0
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6)
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: OS: Linux 5.18.10-arch1-1
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: start worker processes
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: start worker process 30
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: start worker process 31
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: start worker process 32
+myblog-nginx-1          | 2022/07/13 12:12:48 [notice] 1#1: start worker process 33
+myblog-myblog_django-1  |
+myblog-myblog_django-1  | 130 static files copied to '/app_data/static'.
+myblog-myblog_django-1  | [2022-07-13 12:12:49 +0000] [10] [INFO] Starting gunicorn 20.1.0
+myblog-myblog_django-1  | [2022-07-13 12:12:49 +0000] [10] [INFO] Listening at: http://0.0.0.0:8080 (10)
+myblog-myblog_django-1  | [2022-07-13 12:12:49 +0000] [10] [INFO] Using worker: sync
+myblog-myblog_django-1  | [2022-07-13 12:12:49 +0000] [11] [INFO] Booting worker with pid: 11
+```
+
+Enfin, tapons l'adresse : `0.0.0.0` dans le navigateur :
+
+![site](images/screenshot-5.png)
+
+Et voilà le travail !
+
+## Conclusion
+
+Nous avons vu comment créer une **application** simple avec **Django** et comment la tester dans un environnement de **production**.
+
+Le principe reste le même lors du **déploiement** sur un **serveur physique** ou dans le **cloud**.
+
+Indice : seul le fichier de configuration de **Nginx** est à modifier.
+
+## Le mot de la fin
+
+Fini.
