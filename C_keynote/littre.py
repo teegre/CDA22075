@@ -47,7 +47,7 @@ def parse_dic(word: str):
             print(text)
 
 if __name__ == '__main__':
-  if len(sys.argv) != 2:
+  if len(sys.argv) < 2:
     print('Erreur : pas de mot en paramètre !')
     sys.exit(1)
   word = sys.argv[1]
