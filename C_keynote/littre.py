@@ -6,6 +6,89 @@ import sys
 from bs4 import BeautifulSoup as bs
 import requests
 
+def parse_cite(element):
+  """ parse citations """
+  cit = element.q.get_text()
+  element.q.decompose()
+  try:
+    aut = element.a.get_text()
+    # element.a.decompose()
+  except AttributeError:
+    try:
+      aut = element.span.span.get_text()
+      # element.span.span.decompose()
+    except AttributeError:
+      aut = '?'
+  try:
+    ref = element.em.get_text()
+  except AttributeError:
+    ref = '?'
+  element.span.decompose()
+  print(f'  * "{cit}", {aut}, {ref}')
+
+def parse_paragraph(element):
+  """ parse paragraph inside definition """
+  for tag in element:
+    if tag.name == 'dfn':
+      dfn = tag.get_text()
+      if dfn.endswith(', ') or dfn.endswith(','):
+        print(tag.get_text(), end='')
+      else:
+        print(tag.get_text())
+    elif tag.name == 'cite':
+      parse_cite(tag)
+    elif tag.name == 'p':
+      parse_paragraph(tag)
+    elif tag.name is None:
+      text = tag.get_text()
+      if text != ' ' and len(text) > 1:
+        print('-', text)
+
+def parse_ety_paragraph(element):
+  for tag in element.children:
+    print(tag.get_text(), end=' ')
+
+def parse_definitions(definitions):
+  """ parse definitions """
+  while definitions.li is not None:
+    for element in definitions.li.children:
+      if element.name is not None:
+        if element.name == 'b':
+          if element.abbr:
+            print(f'({element.get_text()}', end=')')
+          else:
+            print('--', element.get_text(), end='. ')
+        elif element.name == 'p':
+          parse_paragraph(element)
+        elif element.name == 'cite':
+          parse_cite(element)
+        elif element.name == 'dfn':
+          dfn = element.get_text()
+          if dfn.endswith(', ') or dfn.endswith(','):
+            print(element.get_text(), end='')
+          else:
+            print(element.get_text())
+      else:
+        text = element.get_text()
+        if text != ' ' and len(text) > 1:
+          if text.endswith(', '):
+            print(text, end='')
+          else:
+            print(text)
+    definitions.li.decompose()
+    print()
+
+def parse_etymologie(content):
+  ety = content.find('div', attrs={'class': 'r etymologie'})
+  if not ety:
+    return 1
+  print(ety.h3.get_text())
+  for tag in ety.children:
+    if tag.name == 'p':
+      parse_ety_paragraph(tag)
+      print()
+
+
 def parse_dic(word: str):
   """
   Obtient les définitions du mot donné en paramètre
@@ -20,9 +103,13 @@ def parse_dic(word: str):
   word = word.lower()
   url = 'https://www.littre.org/definition/' + word
 
-  page = requests.get(url)
-  soup = bs(page.content, 'html.parser')
+  try:
+    page = requests.get(url)
+  except Exception:
+    print('Une erreur est survenue !')
+    return 1
 
+  soup = bs(page.content, 'html.parser')
   content = soup.find(id='main-content')
 
   try:
@@ -35,26 +122,10 @@ def parse_dic(word: str):
 
   definitions = content.find('ul', attrs={'class': 'corps',})
 
-  for element in definitions.children:
-    if element.name == 'li':
-      for tag in element.children:
-        name = tag.name
-        text = tag.get_text()
-        if name == 'b':
-          # if 'class' in tag.attrs.keys() and tag['class'] == 'num':
-          if tag.abbr:
-            print('(', tag.abbr.get_text(), end=') ')
-          else:
-            print(text, end=' -- ')
-        elif name == 'dfn':
-          print(text, end='')
-        elif name is None and not text == ' ' and len(text) > 1:
-          try:
-            if tag.children:
-              print(text, end=' ')
-          except AttributeError:
-            print(text)
-    return 0
+  parse_definitions(definitions)
+  parse_etymologie(content)
+
+  return 0
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
