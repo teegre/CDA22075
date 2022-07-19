@@ -1,13 +1,22 @@
 #! /usr/bin/env python
+
+""" https://www.littre.com webscraper """
+
 import sys
 from bs4 import BeautifulSoup as bs
 import requests
 
 def parse_dic(word: str):
+  """
+  Obtient les définitions du mot donné en paramètre
+  sur https://www.littre.org
+  """
+  # TODO Autres rubriques (Citations, Etymologie, Historique, etc.)
+  # TODO Cache
   if not word:
     print('erreur: pas de mot en paramètre.')
     return 1
-  
+
   word = word.lower()
   url = 'https://www.littre.org/definition/' + word
 
@@ -45,10 +54,11 @@ def parse_dic(word: str):
               print(text, end=' ')
           except AttributeError:
             print(text)
+    return 0
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
     print('Erreur : pas de mot en paramètre !')
     sys.exit(1)
-  word = sys.argv[1]
-  parse_dic(word)
+  WORD = sys.argv[1]
+  sys.exit(parse_dic(WORD))
