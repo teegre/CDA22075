@@ -17,7 +17,7 @@ def parse_dic(word: str):
   content = soup.find(id='main-content')
 
   try:
-    print(content.h2.get_text())
+    print(content.h2.get_text().upper())
   except AttributeError:
     print('Mot non trouvé')
     return 1
