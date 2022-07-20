@@ -20,4 +20,3 @@ manage <-- mod
 manage <-- del
 B --|> U : (extends)
 @enduml
-

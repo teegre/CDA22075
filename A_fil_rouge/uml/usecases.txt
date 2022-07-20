@@ -1,0 +1,17 @@
+* COMPTES UTILISATEURS particuliers et professionnels
+-- Création de compte.
+-- Connexion/déconnexion utilisateur (mot de passe oublié).
+-- Modification du profil.
+-- Visualisation des (anciennes) commandes.
+* Achat en ligne.
+-- Consultation du catalogue.
+-- Ajout/suppression de produits dans le panier.
+-- Validation du panier.
+-- Paiement.
+* Gestion
+-- Création compte client professionnel.
+-- Modification du coefficient de réduction.
+-- Ajout d'une réduction sur une facture.
+-- Consultation et CRUD produits.
+-- Consultation des tableaux de bord.
+-- Imprimer facture et/ou bordereau de livraison.
