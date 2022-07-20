@@ -3,6 +3,9 @@
 <!-- effect=matrix -->
 ---
 <!-- fg=white bg=black -->
+# Django+Docker
+---
+<!-- fg=white bg=black -->
 # Django ?
 ---
 <!-- fg=white bg=black -->
@@ -29,7 +32,6 @@ HTTP      ,------------.
              ,-----.
              | vue |
              `-----'
-
 ```
 ---
 <!-- fg=white bg=black -->
@@ -54,7 +56,6 @@ HTTP      ,------------.
                      ,---------.
                      | gabarit |
                      `---------'
-
 ```
 ---
 <!-- fg=white bg=black -->
@@ -63,7 +64,7 @@ HTTP      ,------------.
 <!-- fg=white bg=black -->
 ```
                ,-.               ,-.
-               `-'   :extends:   `-'
+               `-'  :extends:    `-'
                /|\ -----------|> /|\
                / \               / \
              Blogueur         Internaute --------.
@@ -221,5 +222,7 @@ http://0.0.0.0    | +-------+      +----------+        +--------+ |
 <!-- fg=white bg=black -->
 # Conclusion
 ---
+<!-- fg=white bg=black -->
 ## M E R C I  D E  V O T R E  A T T E N T I O N  !
+<!-- effect=stars -->
 ---
