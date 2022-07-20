@@ -3,6 +3,8 @@
 """ https://www.littre.com webscraper """
 
 import sys
+from os import getenv, makedirs
+from os.path import exists
 from bs4 import BeautifulSoup as bs
 import requests
 
@@ -88,38 +90,63 @@ def parse_etymologie(content):
       parse_ety_paragraph(tag)
       print()
 
-
 def parse_dic(word: str):
   """
   Obtient les définitions du mot donné en paramètre
   sur https://www.littre.org
   """
+<<<<<<< HEAD
   # TODO Autres rubriques (Citations, Historique, etc.)
   # TODO Cache
+=======
+  # TODO Autres rubriques (Citations, Etymologie, Historique, etc.)
+>>>>>>> 340bc7e (save words to cache)
   if not word:
     print('erreur: pas de mot en paramètre.')
     return 1
 
   word = word.lower()
   url = 'https://www.littre.org/definition/' + word
+  home = getenv('HOME')
+  cache_path = f'{home}/.config/littre/cache'
+  # Création du répertoire pour le cache
+  # s'il n'existe pas déjà
+  if not exists(cache_path):
+    makedirs(cache_path)
 
-  try:
-    page = requests.get(url)
-  except Exception:
-    print('Une erreur est survenue !')
-    return 1
+  cache_file = f'{cache_path}/.{word}'
+  cached = False
 
-  soup = bs(page.content, 'html.parser')
-  content = soup.find(id='main-content')
+  if exists(cache_file):
+    with open(cache_file, 'r', encoding='utf-8') as file:
+      page = file.read()
+      content = bs(page, 'html.parser')
+      cached = True
+  else:
+    try:
+      page = requests.get(url)
+    except Exception:
+      print('Une erreur est survenue !')
+      return 1
 
-  try:
-    print(content.h2.get_text().upper())
-  except AttributeError:
-    print('Mot non trouvé')
-    return 1
+    soup = bs(page.content, 'html.parser')
+    content = soup.find(id='main-content')
+    if content is None:
+      print(f'{word.upper()} : non trouvé.')
+      return 1
 
+    with open(cache_file, 'w', encoding='utf-8') as file:
+      file.write(str(content))
+
+  # Titre
+  print(content.h2.get_text().upper())
+  if cached:
+    print('[En cache]')
+
+  # Entête
   print(content.find('div', attrs={'class': 'entete'}).get_text(), '\n')
 
+  # Définitions
   definitions = content.find('ul', attrs={'class': 'corps',})
 
   parse_definitions(definitions)
