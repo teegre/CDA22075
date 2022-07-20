@@ -94,7 +94,7 @@ def parse_dic(word: str):
   Obtient les définitions du mot donné en paramètre
   sur https://www.littre.org
   """
-  # TODO Autres rubriques (Citations, Etymologie, Historique, etc.)
+  # TODO Autres rubriques (Citations, Historique, etc.)
   # TODO Cache
   if not word:
     print('erreur: pas de mot en paramètre.')
