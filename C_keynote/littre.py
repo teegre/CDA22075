@@ -185,14 +185,20 @@ def parse_dic(word: str):
       print(f'{word.upper()} : non trouvé.')
       return 1
 
-    # Mise en cache du fichier
-    with open(cache_file, 'w', encoding='utf-8') as file:
-      file.write(str(content))
-
   # Titre
-  print(content.h2.get_text().upper())
-  if cached:
-    print('[En cache]')
+  try:
+    print(content.h2.get_text().upper(), end=' ')
+    if cached:
+      print('[en cache]')
+    else:
+      # Mise en cache du fichier
+      with open(cache_file, 'w', encoding='utf-8') as file:
+        file.write(str(content))
+      print('[nouveau]')
+  except AttributeError: 
+    print(f'{word.upper()} : non trouvé.')
+    return 1
+
 
   # Entête
   print(content.find('div', attrs={'class': 'entete'}).get_text(), '\n')
