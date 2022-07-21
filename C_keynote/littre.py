@@ -30,6 +30,7 @@ def parse_citation(element):
 
 def parse_paragraphe(element):
   """ parse paragraph inside definition """
+  print('>', end=' ')
   for tag in element:
     if tag.name == 'dfn':
       dfn = tag.get_text()
@@ -41,10 +42,14 @@ def parse_paragraphe(element):
       parse_citation(tag)
     elif tag.name == 'p':
       parse_paragraphe(tag)
+    elif tag.name == 'sup':
+      print(tag.get_text(), end='')
     elif tag.name is None:
       text = tag.get_text()
-      if text != ' ' and len(text) > 1:
-        print('-', text)
+      if text.endswith('. '):
+        print(text)
+      elif text != ' ' and len(text) >= 1:
+        print(text, end='')
 
 def parse_etymologie_paragraphe(element):
   """ parse etymology paragraph """
@@ -92,6 +97,7 @@ def parse_remarque(content):
       print()
 
 def parse_historique(content):
+  """ parse history section """
   historique = content.find('div', attrs={'class': 'r historique'})
   if not historique:
     return
@@ -118,7 +124,10 @@ def parse_supplement(content):
   if not supplement:
     return
   print(supplement.h3.get_text())
-  for tag in supplement.div.children:
+  supplement.h3.decompose()
+  if supplement.div:
+    supplement = supplement.div
+  for tag in supplement.children:
     if tag.name is None:
       print(tag.get_text())
     elif tag.name is not None:
