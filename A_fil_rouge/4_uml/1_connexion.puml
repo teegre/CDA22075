@@ -1,0 +1,24 @@
+@startuml
+
+!theme plain
+
+participant Client as C #yellow
+participant "Village Green" as V << (V, #00FF00) Site web >> #lightGreen
+database "Base de données" as B #lightBlue
+
+autonumber
+C -[#green]> V: Connexion
+V -[#green]> B: Vérification
+B -[#green]-> V: Autorisation accordée
+V -[#green]-> C: Connecté
+
+== Utilisateur et/ou mot de passe incorrect ==
+autonumber 1
+C -[#red]> V: Connexion
+V -[#red]> B: Vérification
+B -[#red]-> V: Autorisation refusée
+V -[#red]-X C: Connexion refusée
+
+title Connexion
+
+@enduml

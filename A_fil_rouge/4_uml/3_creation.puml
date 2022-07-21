@@ -1,0 +1,25 @@
+@startuml
+
+!theme plain
+
+participant "**Client**\n(particulier)" as C #yellow
+participant "**Village Green**" as V << (V, #00FF00) Site web >> #lightGreen
+database "**Base de**\n**données**" as B #lightBlue
+
+autonumber
+C -[#green]> V: Remplissage du formulaire
+V -[#green]> V: Vérification des données
+V -[#green]> B: Enregistrement des données
+B -[#green]-> V: Données enregistrées
+V -[#green]-> C: Redirection vers écran de connexion
+
+== Données invalides ==
+
+autonumber 1
+C -[#red]> V: Remplit le formulaire
+V -[#red]> V: Vérification des données
+V -[#red]-X C: Données invalides
+
+title Création compte utilisateur
+
+@enduml

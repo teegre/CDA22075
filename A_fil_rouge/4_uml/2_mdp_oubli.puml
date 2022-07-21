@@ -1,0 +1,47 @@
+@startuml
+
+!theme plain
+'skinparam handwritten true
+
+participant "**Client**" as C #yellow
+participant "**Village Green**" as V << (V, #00FF00) Site web >> #lightGreen
+database "**Base de**\n**données**" as B #lightBlue
+
+autonumber
+C -[#green]> V: Mot de passe oublié
+V -[#green]> B: Vérification utilisateur
+B -[#green]-> V: Utilisateur connu
+V -[#green]-> C: Envoi e-mail
+C -[#green]> V: Changement du mot de passe
+V -[#green]> B: Mise à jour du mot de passe
+B -[#green]-> V: Opération réussie (OK)
+V -[#green]-> C: Redirection vers l'écran de connexion
+
+== Échec de l'envoi d'e-mail ==
+
+autonumber 1
+C -[#green]> V: Mot de passe oublié
+V -[#green]> B: Vérification utilisateur
+B -[#green]-> V: Utilisateur connu
+V -[#green]-> C: Envoi e-mail
+autonumber stop
+V -[#red]-X C: Échec de l'envoi
+
+== E-mail non reçu par le client ==
+autonumber 1
+C -[#green]> V: Mot de passe oublié
+V -[#green]> B: Vérification utilisateur
+B -[#green]-> V: Utilisateur connu
+V -[#green]-> C: Envoi e-mail
+C -[#red]X C: E-mail non reçu
+
+== Client inconnu ==
+autonumber 1
+C -[#red]> V: Mot de passe oublié
+V -[#red]> B: Vérification utilisateur
+B -[#red]-> V: Utilisateur inconnu
+V -[#red]-X C: Demande refusée
+
+title Mot de passe oublié
+
+@enduml
