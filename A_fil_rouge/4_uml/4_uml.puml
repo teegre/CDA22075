@@ -1,0 +1,58 @@
+@startuml
+!theme plain
+skinparam actorStyle hollow
+
+left to right direction
+
+actor Gestionnaire as G
+rectangle Client as C {
+  :particulier: as Par
+  :professionel: as Pro
+}
+
+'rectangle "Gestion produits" {
+'  G -> (ajout)
+'  G -> (modification)
+'  G -> (effacement)
+'}
+'
+'rectangle "Gestion comptes clients pros" {
+'  G -> (création de compte)
+'  G -> (modification coefficient)
+'  G -> (ajout réduction sur facture)
+'}
+rectangle Produits as P {
+  C -- (consultation catalogue)
+  (gestion des produits)
+}
+
+G -- P
+
+rectangle "Panier" {
+  C -- (ajout/suppression\nde produits dans panier)
+  C -- (sauvegarde du panier)
+  C -- (validation du panier)
+}
+
+rectangle "Paiement" {
+  Par -- (paiement en ligne)
+  Pro -- (paiement en différé)
+}
+
+rectangle "Compte" {
+
+   Par -- (création d'un compte)
+   C -- (modification compte)
+   G -- (modification coefficient)
+   G -- (ajout réduction sur facture)
+}
+
+'actor Utilisateur as U
+'actor Particulier as  CPa
+'actor Professionel as CPr
+'U -|> C
+'U -|> G
+'C -|> CPa
+'C -|> CPr
+
+@enduml
